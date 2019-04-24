@@ -52,12 +52,16 @@ StatefulReader::~StatefulReader()
 
 
 
-StatefulReader::StatefulReader(RTPSParticipantImpl* pimpl,GUID_t& guid,
-        ReaderAttributes& att,ReaderHistory* hist,ReaderListener* listen):
-    RTPSReader(pimpl,guid,att,hist, listen),
-    m_acknackCount(0),
-    m_nackfragCount(0),
-    m_times(att.times)
+StatefulReader::StatefulReader(
+        RTPSParticipantImpl* pimpl,
+        GUID_t& guid,
+        ReaderAttributes& att,
+        ReaderHistory* hist,
+        ReaderListener* listen)
+    : RTPSReader(pimpl,guid,att,hist, listen)
+    , m_acknackCount(0)
+    , m_nackfragCount(0)
+    , m_times(att.times)
 {
 }
 
@@ -87,6 +91,7 @@ bool StatefulReader::matched_writer_add(RemoteWriterAttributes& wdata)
     add_persistence_guid(wdata);
     wp->loaded_from_storage_nts(get_last_notified(wdata.guid));
     matched_writers.push_back(wp);
+
     logInfo(RTPS_READER,"Writer Proxy " <<wp->m_att.guid <<" added to " <<m_guid.entityId);
     return true;
 }
@@ -335,6 +340,7 @@ bool StatefulReader::processDataFragMsg(CacheChange_t *incomingChange, uint32_t 
             {
                 if(!change_received(change_completed, pWP))
                 {
+
                     logInfo(RTPS_MSG_IN, IDSTRING"MessageReceiver not add change " << change_completed->sequenceNumber.to64long());
 
                     // Assert liveliness because it is a participant discovery info.

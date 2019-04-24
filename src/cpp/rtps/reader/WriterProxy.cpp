@@ -122,8 +122,11 @@ WriterProxy::WriterProxy(const RemoteWriterAttributes& watt,
     mp_writerProxyLiveliness = new WriterProxyLiveliness(this,TimeConv::Time_t2MilliSecondsDouble(m_att.livelinessLeaseDuration)*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
     mp_heartbeatResponse = new HeartbeatResponseDelay(this,TimeConv::Time_t2MilliSecondsDouble(mp_SFR->getTimes().heartbeatResponseDelay));
     mp_initialAcknack = new InitialAckNack(this, TimeConv::Time_t2MilliSecondsDouble(mp_SFR->getTimes().initialAcknackDelay));
+
     if(m_att.livelinessLeaseDuration < c_TimeInfinite)
+    {
         mp_writerProxyLiveliness->restart_timer();
+    }
     logInfo(RTPS_READER,"Writer Proxy created in reader: "<<mp_SFR->getGuid().entityId);
 }
 
