@@ -24,6 +24,7 @@
 #include "../flowcontrol/ThroughputControllerDescriptor.h"
 #include "EndpointAttributes.h"
 #include "../../utils/collections/ResourceLimitedContainerConfig.hpp"
+#include "../../qos/QosPolicies.h"
 
 #include <functional>
 
@@ -81,8 +82,9 @@ class  WriterAttributes
 {
     public:
 
-        WriterAttributes() : mode(SYNCHRONOUS_WRITER),
-            disableHeartbeatPiggyback(false)
+        WriterAttributes()
+            : mode(SYNCHRONOUS_WRITER)
+            , disableHeartbeatPiggyback(false)
         {
             endpoint.endpointKind = WRITER;
             endpoint.durabilityKind = TRANSIENT_LOCAL;
@@ -96,6 +98,12 @@ class  WriterAttributes
 
         //!Writer Times (only used for RELIABLE).
         WriterTimes times;
+
+        //! Liveliness kind
+        LivelinessQosPolicyKind liveliness_kind;
+
+        //! Liveliness lease duration
+        Duration_t liveliness_lease_duration;
 
         //!Indicates if the Writer is synchronous or asynchronous
         RTPSWriterPublishMode mode;
@@ -118,14 +126,16 @@ class  RemoteReaderAttributes
 {
     public:
 
-        RemoteReaderAttributes() : expectsInlineQos(false),
-        is_eprosima_endpoint(true)
+        RemoteReaderAttributes()
+            : expectsInlineQos(false)
+            , is_eprosima_endpoint(true)
         {
             endpoint.endpointKind = READER;
         }
 
-        RemoteReaderAttributes(const VendorId_t& vendor_id) : expectsInlineQos(false),
-        is_eprosima_endpoint(vendor_id == c_VendorId_eProsima)
+        RemoteReaderAttributes(const VendorId_t& vendor_id)
+            : expectsInlineQos(false)
+            , is_eprosima_endpoint(vendor_id == c_VendorId_eProsima)
         {
             endpoint.endpointKind = READER;
         }

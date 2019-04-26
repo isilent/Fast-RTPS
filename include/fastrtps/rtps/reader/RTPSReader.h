@@ -25,22 +25,21 @@
 #include "../Endpoint.h"
 #include "../attributes/ReaderAttributes.h"
 #include "../common/SequenceNumber.h"
+#include "../../qos/LivelinessChangedStatus.h"
 
 #include <map>
 
-namespace eprosima
-{
-namespace fastrtps
-{
-namespace rtps
-{
+namespace eprosima {
+namespace fastrtps {
+namespace rtps {
 
 // Forward declarations
-class ReaderListener;
-class ReaderHistory;
-struct CacheChange_t;
-class WriterProxy;
 class FragmentedChangePitStop;
+class LivelinessManager;
+class ReaderHistory;
+class ReaderListener;
+class WriterProxy;
+struct CacheChange_t;
 
 /**
  * Class RTPSReader, manages the reception of data from its matched writers.
@@ -277,7 +276,29 @@ protected:
     //TODO Select one
     FragmentedChangePitStop* fragmentedChangePitStop_;
 
+protected:
+
+    //! A liveliness manager keeping track of liveliness of matched writers
+    //! Only used if the lease duration of this reader is not infinite
+    //! Classes inheriting from RTPSReader should keep this class updated
+    LivelinessManager* liveliness_manager_;
+
 private:
+
+    //! The liveliness changed status struct as defined in the DDS
+    LivelinessChangedStatus liveliness_changed_status_;
+
+    /**
+     * @brief A method invoked by the liveliness manager when a writer loses liveliness
+     * @param writer The writer losing liveliness
+     */
+    void on_liveliness_lost(GUID_t writer);
+
+    /**
+     * @brief A method invoked by the liveliness manager when a writer recovers liveliness
+     * @param writer The writer recovering liveliness
+     */
+    void on_liveliness_recovered(GUID_t writer);
 
     RTPSReader& operator=(const RTPSReader&) = delete;
 };

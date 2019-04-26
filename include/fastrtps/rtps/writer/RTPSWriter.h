@@ -22,7 +22,10 @@
 #include "../Endpoint.h"
 #include "../messages/RTPSMessageGroup.h"
 #include "../attributes/WriterAttributes.h"
+#include "../../qos/LivelinessLostStatus.h"
 #include "../../utils/collections/ResourceLimitedVector.hpp"
+#include "LivelinessData.h"
+
 #include <vector>
 #include <memory>
 #include <functional>
@@ -143,18 +146,6 @@ class RTPSWriter : public Endpoint
     RTPS_DllAPI inline WriterListener* getListener(){ return mp_listener; };
 
     /**
-     * Get the asserted liveliness
-     * @return Asserted liveliness
-     */
-    RTPS_DllAPI inline bool getLivelinessAsserted() { return m_livelinessAsserted; };
-
-    /**
-     * Get the asserted liveliness
-     * @return asserted liveliness
-     */
-    RTPS_DllAPI inline void setLivelinessAsserted(bool l){ m_livelinessAsserted = l; };
-
-    /**
      * Get the publication mode
      * @return publication mode
      */
@@ -244,14 +235,15 @@ class RTPSWriter : public Endpoint
         return writer_guid == m_guid;
     }
 
+    //! Liveliness lost status of this writer
+    LivelinessLostStatus liveliness_lost_status_;
+
 protected:
 
     //!Is the data sent directly or announced by HB and THEN send to the ones who ask for it?.
     bool m_pushMode;
     //!Group created to send messages more efficiently
     RTPSMessageGroup_t m_cdrmessages;
-    //!INdicates if the liveliness has been asserted
-    bool m_livelinessAsserted;
     //!WriterHistory
     WriterHistory* mp_history;
     //!Listener
@@ -260,6 +252,8 @@ protected:
     bool is_async_;
     //!Separate sending activated
     bool m_separateSendingEnabled;
+    //! Liveliness data
+    LivelinessData liveliness_data_;
 
     LocatorList_t mAllShrinkedLocatorList;
 
