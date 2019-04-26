@@ -40,13 +40,20 @@ StatelessReader::~StatelessReader()
     logInfo(RTPS_READER,"Removing reader "<<this->getGuid());
 }
 
-StatelessReader::StatelessReader(RTPSParticipantImpl* pimpl,GUID_t& guid,
-        ReaderAttributes& att,ReaderHistory* hist,ReaderListener* listen):
-    RTPSReader(pimpl,guid,att,hist, listen)
+StatelessReader::StatelessReader(
+        RTPSParticipantImpl* pimpl,
+        GUID_t& guid,
+        ReaderAttributes& att,
+        ReaderHistory* hist,
+        ReaderListener* listen)
+    : RTPSReader(
+          pimpl,
+          guid,
+          att,
+          hist,
+          listen)
 {
 }
-
-
 
 bool StatelessReader::matched_writer_add(RemoteWriterAttributes& wdata)
 {
@@ -65,6 +72,7 @@ bool StatelessReader::matched_writer_add(RemoteWriterAttributes& wdata)
     m_acceptMessagesFromUnkownWriters = false;
     return true;
 }
+
 bool StatelessReader::matched_writer_remove(const RemoteWriterAttributes& wdata)
 {
     std::lock_guard<std::recursive_timed_mutex> guard(mp_mutex);
