@@ -151,7 +151,6 @@ bool EDP::newLocalWriterProxyData(RTPSWriter* writer, const TopicAttributes& att
 {
     logInfo(RTPS_EDP,"Adding " << writer->getGuid().entityId << " in topic "<<att.topicName);
     WriterProxyData wpd;
-    wpd.isAlive(true);
     wpd.guid(writer->getGuid());
     wpd.key() = wpd.guid();
     wpd.multicastLocatorList(writer->getAttributes().multicastLocatorList);
@@ -279,7 +278,6 @@ bool EDP::updatedLocalWriter(RTPSWriter* writer, const TopicAttributes& att, con
 {
     ParticipantProxyData pdata;
     WriterProxyData wdata;
-    wdata.isAlive(true);
     wdata.guid(writer->getGuid());
     wdata.key() = wdata.guid();
     wdata.multicastLocatorList(writer->getAttributes().multicastLocatorList);
@@ -533,11 +531,6 @@ bool EDP::validMatching(const ReaderProxyData* rdata, const WriterProxyData* wda
     if(!checkTypeIdentifier(wdata, rdata))
     {
         logInfo(RTPS_EDP, "Matching failed on checkTypeIdentifier.");
-        return false;
-    }
-    if(!wdata->isAlive()) //Matching
-    {
-        logWarning(RTPS_EDP, "WriterProxyData " << wdata->guid() << " is NOT alive");
         return false;
     }
     if(rdata->m_qos.m_reliability.kind == RELIABLE_RELIABILITY_QOS
