@@ -155,8 +155,15 @@ private:
     public:
         SubscriberReaderListener(SubscriberImpl* s): mp_subscriberImpl(s) {}
         virtual ~SubscriberReaderListener() {}
-        void onReaderMatched(rtps::RTPSReader* reader, rtps::MatchingInfo& info);
-        void onNewCacheChangeAdded(rtps::RTPSReader * reader,const rtps::CacheChange_t* const change);
+        void onReaderMatched(
+                rtps::RTPSReader* reader,
+                rtps::MatchingInfo& info) override;
+        void onNewCacheChangeAdded(
+                rtps::RTPSReader * reader,
+                const rtps::CacheChange_t* const change) override;
+        void on_liveliness_changed(
+                rtps::RTPSReader* reader,
+                const LivelinessChangedStatus& status) override;
         SubscriberImpl* mp_subscriberImpl;
     } m_readerListener;
 
