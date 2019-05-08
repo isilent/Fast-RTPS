@@ -354,6 +354,7 @@ bool StatelessReader::processHeartbeatMsg(
         {
             logError(RTPS_READER, "Could not assert liveliness of writer " << writerGUID);
         }
+
     }
 
     return true;
