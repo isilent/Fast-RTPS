@@ -384,6 +384,24 @@ TEST(LivelinessManagerTests, TimerOwnerRemoved)
     EXPECT_EQ(env->num_writers_lost, 1);
 }
 
+//! Tests that the liveliness manager can be configured to not manage automatic writers
+TEST(LivelinessManagerTests, ExcludeAutomaticWriters)
+{
+    LivelinessManager liveliness_manager(
+                std::bind(&TimedEventEnvironment::liveliness_lost, env, std::placeholders::_1),
+                std::bind(&TimedEventEnvironment::liveliness_recovered, env, std::placeholders::_1),
+                env->service_,
+                *env->thread_,
+                false);
+
+    GuidPrefix_t guidP;
+    guidP.value[0] = 1;
+
+    EXPECT_EQ(liveliness_manager.add_writer(GUID_t(guidP, 1), AUTOMATIC_LIVELINESS_QOS, Duration_t(0.5)), false);
+    EXPECT_EQ(liveliness_manager.add_writer(GUID_t(guidP, 2), AUTOMATIC_LIVELINESS_QOS, Duration_t(1)), false);
+    EXPECT_EQ(liveliness_manager.assert_liveliness(AUTOMATIC_LIVELINESS_QOS), false);
+}
+
 } // namespace rtps
 } // namespace fastrtps
 } // namespace eprosima
