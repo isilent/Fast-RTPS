@@ -72,7 +72,7 @@ void ReaderProxy::start(const ReaderProxyData& reader_attributes)
     reader_attributes_ = reader_attributes;
 
     nack_supression_event_->reader_guid(reader_attributes_.guid());
-    timers_enabled_.store(reader_attributes_.endpoint.reliabilityKind == RELIABLE);
+    timers_enabled_.store(is_reliable());
 
     logInfo(RTPS_WRITER, "Reader Proxy started");
 }
